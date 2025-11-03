@@ -19,3 +19,5 @@
 ## 0.0.7
 * update checkout-sheet-kit-android 3.5.3 + dependencies
 
+## 0.0.8 
+* Add checkout kit color scheme support
