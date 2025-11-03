@@ -1,11 +1,13 @@
 import 'package:shopify_sheet/model/shopify_sheet_color_scheme.dart';
+import 'package:shopify_sheet/model/shopify_sheet_completed_event.dart';
 import 'package:shopify_sheet/shopify_sheet_platform_interface.dart';
+import 'package:shopify_sheet/utils/standard_codec_map_converter.dart';
 
 /// Event data for Shopify Checkout
 class ShopifySheetEvent {
   final ShopifySheetEventType type;
   final String? error;
-  final Map<dynamic, dynamic>? data; // Add this field to include detailed data
+  final Map<dynamic, dynamic>? data;
 
   ShopifySheetEvent({required this.type, this.error, this.data});
 
@@ -13,16 +15,26 @@ class ShopifySheetEvent {
   factory ShopifySheetEvent.fromNative(Map<String, dynamic> data) {
     final eventType = data['event'];
     final error = data['error'] as String?;
-    final eventData =
-        data['data'] as Map<dynamic, dynamic>?; // Extract additional data
+    final eventData = data['data'] as Map<Object?, Object?>?;
+
+    final Map<String, dynamic>? eventDataJsonMap;
+    if (eventData != null) {
+      final converter = StandardCodecMapConverter();
+      eventDataJsonMap = converter.fromJson(eventData);
+    } else {
+      eventDataJsonMap = null;
+    }
 
     switch (eventType) {
       case 'completed':
-        return ShopifySheetEvent(
-          type: ShopifySheetEventType.completed,
-          error: error,
-          data: eventData, // Pass additional data for completed event
-        );
+        if (eventDataJsonMap == null) {
+          return ShopifySheetEvent(
+            type: ShopifySheetEventType.completed,
+            error: error,
+            data: eventData,
+          );
+        }
+        return ShopifySheetCompletedEvent.fromJson(eventDataJsonMap);
       case 'canceled':
         return ShopifySheetEvent(
           type: ShopifySheetEventType.canceled,
