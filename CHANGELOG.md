@@ -21,3 +21,7 @@
 
 ## 0.0.8 
 * Add checkout kit color scheme support
+
+## 0.1.0
+* Add dart serialized `ShopifySheetCompletedEvent` 
+* Add android completed event serialization
