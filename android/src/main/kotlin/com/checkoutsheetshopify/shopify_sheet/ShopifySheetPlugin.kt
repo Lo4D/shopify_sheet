@@ -1,7 +1,6 @@
 package com.checkoutsheetshopify.shopify_sheet
 
 import android.app.Activity
-import androidx.annotation.NonNull
 import com.shopify.checkoutsheetkit.ShopifyCheckoutSheetKit
 import com.shopify.checkoutsheetkit.DefaultCheckoutEventProcessor
 import com.shopify.checkoutsheetkit.lifecycleevents.CheckoutCompletedEvent
@@ -12,10 +11,9 @@ import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.EventChannel
-import android.util.Log
 import com.shopify.checkoutsheetkit.CheckoutSheetKitDialog
 import com.shopify.checkoutsheetkit.ColorScheme
-import com.shopify.checkoutsheetkit.LogLevel
+import kotlinx.serialization.json.*
 
 /** ShopifySheetPlugin */
 class ShopifySheetPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware {
@@ -99,9 +97,12 @@ class ShopifySheetPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Activ
                         }
 
                         override fun onCheckoutCompleted(checkoutCompletedEvent: CheckoutCompletedEvent) {
+                            val eventJson = Json.encodeToJsonElement(checkoutCompletedEvent) as JsonObject?
+                            val eventJsonMap = eventJson?.toPrimitiveMap()
                             eventSink?.success(
                                 mapOf(
                                     "event" to "completed",
+                                    "data" to eventJsonMap,
                                     "error" to null // No error for successful completion
                                 )
                             )
@@ -150,5 +151,24 @@ class ShopifySheetPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Activ
 
     override fun onDetachedFromActivity() {
         activity = null
+    }
+}
+
+// Helper extension function to convert a JsonElement tree into platform channel compatible types
+fun JsonElement.toPrimitiveMap(): Map<String, Any?> {
+    return this.jsonObject.entries.associate { (key, value) ->
+        key to value.toAny()
+    }
+}
+
+@Suppress("UNCHECKED_CAST")
+fun JsonElement.toAny(): Any? {
+    return when (this) {
+        is JsonPrimitive -> {
+            if (this.isString) this.content
+            else this.content.toBooleanStrictOrNull() ?: this.content.toIntOrNull() ?: this.content.toLongOrNull() ?: this.content.toDoubleOrNull() ?: this.content
+        }
+        is JsonObject -> this.toPrimitiveMap()
+        is JsonArray -> this.map { it.toAny() }
     }
 }
