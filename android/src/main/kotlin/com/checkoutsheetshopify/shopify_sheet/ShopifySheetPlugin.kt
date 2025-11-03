@@ -14,6 +14,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.EventChannel
 import android.util.Log
 import com.shopify.checkoutsheetkit.CheckoutSheetKitDialog
+import com.shopify.checkoutsheetkit.ColorScheme
 import com.shopify.checkoutsheetkit.LogLevel
 
 /** ShopifySheetPlugin */
@@ -25,7 +26,7 @@ class ShopifySheetPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Activ
     private var eventSink: EventChannel.EventSink? = null
     private var checkoutSheet: CheckoutSheetKitDialog? = null
 
-    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         methodChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "shopify_sheet")
         methodChannel.setMethodCallHandler(this)
 
@@ -41,7 +42,7 @@ class ShopifySheetPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Activ
         })
     }
 
-    override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+    override fun onDetachedFromEngine( binding: FlutterPlugin.FlutterPluginBinding) {
         methodChannel.setMethodCallHandler(null)
         eventChannel.setStreamHandler(null)
     }
@@ -50,7 +51,24 @@ class ShopifySheetPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Activ
         when (call.method) {
             "launchCheckout" -> {
                 val checkoutUrl = call.argument<String>("checkoutUrl")
+                val colorScheme = call.argument<String>("colorScheme")
                 if (checkoutUrl != null) {
+                    ShopifyCheckoutSheetKit.configure {
+                        when(colorScheme) {
+                            "automatic" -> {
+                                it.colorScheme = ColorScheme.Automatic()
+                            }
+                            "light" -> {
+                                it.colorScheme = ColorScheme.Light()
+                            }
+                            "dark" -> {
+                                it.colorScheme = ColorScheme.Dark()
+                            }
+                            "web" -> {
+                                it.colorScheme = ColorScheme.Web()
+                            }
+                        }
+                    }
                     launchCheckout(checkoutUrl, result)
                 } else {
                     result.error("INVALID_ARGUMENTS", "Checkout URL is null", null)
@@ -69,9 +87,6 @@ class ShopifySheetPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, Activ
         val currentActivity = activity
         if (currentActivity is androidx.activity.ComponentActivity) {
             try {
-		/*ShopifyCheckoutSheetKit.configure {
-		    it.logLevel = LogLevel.DEBUG
-		}*/
                 checkoutSheet = ShopifyCheckoutSheetKit.present(checkoutUrl,
                     currentActivity,
                     object : DefaultCheckoutEventProcessor(currentActivity) {
