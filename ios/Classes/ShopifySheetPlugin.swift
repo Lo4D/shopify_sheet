@@ -19,9 +19,22 @@ public class ShopifySheetPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
         switch call.method {
         case "launchCheckout":
             guard let args = call.arguments as? [String: Any],
-                  let checkoutUrl = args["checkoutUrl"] as? String else {
+                  let checkoutUrl = args["checkoutUrl"] as? String,
+                  let colorScheme = args["colorScheme"] as? String else {
                 result(FlutterError(code: "INVALID_ARGUMENTS", message: "Invalid or missing arguments", details: nil))
                 return
+            }
+            switch (colorScheme) {
+              case "light":
+                ShopifyCheckoutSheetKit.configuration.colorScheme = .light
+              case "dark":
+                ShopifyCheckoutSheetKit.configuration.colorScheme = .dark
+              case "web":
+                ShopifyCheckoutSheetKit.configuration.colorScheme = .web
+              case "automatic":
+                ShopifyCheckoutSheetKit.configuration.colorScheme = .automatic
+              default:
+                break;
             }
             presentCheckout(url: checkoutUrl, result: result)
         case "closeCheckout":

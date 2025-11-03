@@ -1,4 +1,5 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:shopify_sheet/model/shopify_sheet_color_scheme.dart';
 import 'package:shopify_sheet/shopify_sheet_method_channel.dart';
 
 abstract class ShopifySheetPlatform extends PlatformInterface {
@@ -18,7 +19,10 @@ abstract class ShopifySheetPlatform extends PlatformInterface {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
-  Future<void> launchCheckout(String checkoutUrl) {
+  Future<void> launchCheckout(
+    String checkoutUrl, {
+    ShopifySheetColorScheme colorScheme = ShopifySheetColorScheme.automatic,
+  }) {
     throw UnimplementedError('launchCheckout() has not been implemented.');
   }
 

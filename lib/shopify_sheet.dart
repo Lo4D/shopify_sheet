@@ -1,3 +1,4 @@
+import 'package:shopify_sheet/model/shopify_sheet_color_scheme.dart';
 import 'package:shopify_sheet/shopify_sheet_platform_interface.dart';
 
 /// Event data for Shopify Checkout
@@ -6,11 +7,7 @@ class ShopifySheetEvent {
   final String? error;
   final Map<dynamic, dynamic>? data; // Add this field to include detailed data
 
-  ShopifySheetEvent({
-    required this.type,
-    this.error,
-    this.data,
-  });
+  ShopifySheetEvent({required this.type, this.error, this.data});
 
   /// Factory to parse event data from native
   factory ShopifySheetEvent.fromNative(Map<String, dynamic> data) {
@@ -38,7 +35,9 @@ class ShopifySheetEvent {
         );
       case 'pixel_event':
         return ShopifySheetEvent(
-            type: ShopifySheetEventType.pixelEvent, data: eventData);
+          type: ShopifySheetEventType.pixelEvent,
+          data: eventData,
+        );
       default:
         return ShopifySheetEvent(
           type: ShopifySheetEventType.unknown,
@@ -56,8 +55,14 @@ class ShopifySheet {
     return ShopifySheetPlatform.instance.getPlatformVersion();
   }
 
-  Future<void> launchCheckout(String checkoutUrl) {
-    return ShopifySheetPlatform.instance.launchCheckout(checkoutUrl);
+  Future<void> launchCheckout(
+    String checkoutUrl, {
+    ShopifySheetColorScheme colorScheme = ShopifySheetColorScheme.automatic,
+  }) {
+    return ShopifySheetPlatform.instance.launchCheckout(
+      checkoutUrl,
+      colorScheme: colorScheme,
+    );
   }
 
   /// Listen for checkout events

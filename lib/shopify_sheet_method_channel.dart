@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:shopify_sheet/model/shopify_sheet_color_scheme.dart';
 
 import 'shopify_sheet_platform_interface.dart';
 
@@ -8,15 +9,21 @@ class MethodChannelShopifySheet extends ShopifySheetPlatform {
 
   @override
   Future<String?> getPlatformVersion() async {
-    final version =
-        await methodChannel.invokeMethod<String>('getPlatformVersion');
+    final version = await methodChannel.invokeMethod<String>(
+      'getPlatformVersion',
+    );
     return version;
   }
 
   @override
-  Future<void> launchCheckout(String checkoutUrl) async {
-    await methodChannel
-        .invokeMethod('launchCheckout', {'checkoutUrl': checkoutUrl});
+  Future<void> launchCheckout(
+    String checkoutUrl, {
+    ShopifySheetColorScheme colorScheme = ShopifySheetColorScheme.automatic,
+  }) async {
+    await methodChannel.invokeMethod('launchCheckout', {
+      'checkoutUrl': checkoutUrl,
+      'colorScheme': colorScheme.name,
+    });
   }
 
   @override

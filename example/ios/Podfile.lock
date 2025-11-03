@@ -1,0 +1,35 @@
+PODS:
+  - Flutter (1.0.0)
+  - integration_test (0.0.1):
+    - Flutter
+  - shopify_sheet (0.0.1):
+    - Flutter
+    - ShopifyCheckoutSheetKit (~> 3)
+  - ShopifyCheckoutSheetKit (3.3.2)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - integration_test (from `.symlinks/plugins/integration_test/ios`)
+  - shopify_sheet (from `.symlinks/plugins/shopify_sheet/ios`)
+
+SPEC REPOS:
+  trunk:
+    - ShopifyCheckoutSheetKit
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  integration_test:
+    :path: ".symlinks/plugins/integration_test/ios"
+  shopify_sheet:
+    :path: ".symlinks/plugins/shopify_sheet/ios"
+
+SPEC CHECKSUMS:
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  integration_test: 4a889634ef21a45d28d50d622cf412dc6d9f586e
+  shopify_sheet: 5069c20e61feb2251bae52b777cbbbc530b1b6cb
+  ShopifyCheckoutSheetKit: f80ff30f6766d1dad7be8107979fbedcde7d156d
+
+PODFILE CHECKSUM: a57f30d18f102dd3ce366b1d62a55ecbef2158e5
+
+COCOAPODS: 1.16.2

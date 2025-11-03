@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:shopify_sheet/model/shopify_sheet_color_scheme.dart';
 import 'package:shopify_sheet/shopify_sheet.dart';
 import 'package:shopify_sheet/shopify_sheet_method_channel.dart';
 import 'package:shopify_sheet/shopify_sheet_platform_interface.dart';
@@ -11,7 +12,10 @@ class MockShopifySheetPlatform
   Future<String?> getPlatformVersion() => Future.value('42');
 
   @override
-  Future<void> launchCheckout(String checkoutUrl) {
+  Future<void> launchCheckout(
+    String checkoutUrl, {
+    ShopifySheetColorScheme colorScheme = ShopifySheetColorScheme.automatic,
+  }) {
     // TODO: implement launchCheckout
     throw UnimplementedError();
   }
